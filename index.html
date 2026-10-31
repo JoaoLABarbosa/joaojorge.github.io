@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>João &amp; Jorge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #bfddf3;
+    --text: #3a3330;
+    --accent: #F5AF19;
+    --soft: #0085B9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Lato', sans-serif; font-weight: 300; background: var(--bg); color: var(--text); line-height: 1.7; }
+  h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; }
+  strong, b { font-weight: 700; }
+
+  nav { position: sticky; top: 0; background: rgba(251,248,244,.95); backdrop-filter: blur(6px); display: flex; justify-content: center; align-items: center; gap: 1.5rem; flex-wrap: wrap; padding: .9rem 1rem; z-index: 10; border-bottom: 1px solid var(--soft); }
+  nav a { color: var(--text); text-decoration: none; font-size: .85rem; letter-spacing: .12em; text-transform: uppercase; }
+  nav a:hover { color: var(--accent); }
+  #lang-toggle { background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: .25rem .9rem; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
+  #lang-toggle:hover { background: var(--accent); color: #fff; filter: none; }
+
+  .hero { min-height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; background: linear-gradient(180deg, var(--soft), var(--bg)); }
+  .hero p.kicker { display: flex; flex-direction: column; white-space: normal; letter-spacing: .3em; text-transform: uppercase; font-size: 1.5rem; color: var(--accent); }
+  .hero h1 { font-size: clamp(3rem, 10vw, 6rem); margin: .5rem 0; }
+  .hero .date { font-size: 1.2rem; }
+  #countdown { margin-top: 2rem; display: flex; gap: 1.5rem; }
+  #countdown div { text-align: center; }
+  #countdown span { display: block; font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; }
+  #countdown small { font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; }
+
+  section { max-width: 760px; margin: 0 auto; padding: 4.5rem 1.5rem; text-align: center; }
+  section h2 { font-size: 2.4rem; margin-bottom: 1.2rem; }
+  section h2::after { content: ''; display: block; width: 50px; height: 2px; background: var(--accent); margin: .7rem auto 0; }
+
+  .cards { display: grid; grid-template-lines: repeat(auto-fit, minmax(210px, 1fr)); display: flex; flex-direction: column; white-space: normal; gap: 1.2rem; margin-top: 1.5rem; }
+  .card { background: #fff; display: flex; flex-direction: column; white-space: normal; border: 1px solid var(--soft); border-radius: 10px; padding: 1.4rem; }
+  .card h3 { font-size: 1.4rem; color: var(--accent); }
+
+  .timeline { list-style: none; margin-top: 1.5rem; text-align: left; }
+  .timeline li { display: flex; gap: 1.2rem; padding: .8rem 0; border-bottom: 1px solid var(--soft); }
+  .timeline time { min-width: 70px; color: var(--accent); font-weight: 400; }
+
+  form { display: grid; gap: 1rem; text-align: left; margin-top: 1.5rem; }
+  label { font-size: .85rem; letter-spacing: .05em; }
+  input, select, textarea { width: 100%; padding: .75rem; border: 1px solid #d9cfc4; border-radius: 6px; font: inherit; background: #fff; }
+  button { background: var(--accent); color: #fff; border: 0; padding: .9rem; border-radius: 6px; font: inherit; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
+  button:hover { filter: brightness(.92); }
+  #thanks { display: none; margin-top: 1rem; color: var(--accent); }
+
+  /* Side photos: fixed to the viewport, they stay in place while the page scrolls.
+     Shown only on wide screens, where there is room next to the 760px content column. */
+  .side-photos { display: none; position: fixed; top: 4rem; bottom: 4rem; flex-direction: column; gap: .5rem;
+                 width: min(260px, calc((100vw - 760px) / 2 - 2rem)); z-index: 1; }
+  .side-photos.left { left: 1rem; }
+  .side-photos.right { right: 1rem; }
+  @media (min-width:  62rem) and (min-height: 26rem) { .side-photos { display: flex; } }
+  .photo { position: relative;flex: 1 1 0; min-height: 0; margin: 0; border-radius: 10px; overflow: hidden;
+           border: 2px dashed var(--accent); background: rgba(255,255,255,.35); color: var(--accent);
+           display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .4rem;
+           font-size: .8rem; letter-spacing: .15em; text-transform: uppercase; }
+  .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo svg { width: 34px; height: 34px; }
+  /* Real photos placed directly inside .side-photos: they share the available height equally
+     (from top to bottom of the panel), so they can never go past the bottom of the page at any zoom.
+     object-fit: cover crops each photo to fit its frame instead of stretching it. */
+  .side-photos > img { flex: 1 1 0; min-height: 0; height: 0; width: 100%; object-fit: cover; display: block; border-radius: 10px; }
+
+  footer { text-align: center; padding: 2.5rem 1rem; background: var(--soft); font-size: .9rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#story" data-i18n="nav_story"></a>
+  <a href="#details" data-i18n="nav_details"></a>
+  <a href="#rsvp" data-i18n="nav_rsvp"></a>
+  <a href="#faq" data-i18n="nav_faq"></a>
+  <a href="#rest" data-i18n="nav_rest"></a>
+  <a href="#info" data-i18n="nav_info"></a>
+  <button id="lang-toggle" type="button" aria-label="Cambiar idioma / Mudar Língua"></button>
+</nav>
+
+<aside class="side-photos left" aria-hidden="true">
+    <img src="JORGE/Foto1.jpeg" alt=""></span></img>
+    <img src="JORGE/Foto3.jpeg" alt=""></span></img>
+    <img src="JORGE/Foto8.jpeg" alt=""></span></img>
+    <img src="JORGE/Foto11.png" alt=""></span></img>
+</aside>
+<aside class="side-photos right" aria-hidden="true">
+    <img src="JORGE/Foto6.jpeg" alt=""></span></img>
+    <img src="JORGE/Foto7.jpeg" alt=""></span></img>
+    <img src="JORGE/Foto5.png" alt=""></span></img>
+    <img src="JORGE/Foto10.jpg" alt=""></span></img>
+</aside>
+
+<header class="hero">
+  <p class="kicker" data-i18n="kicker"></p>
+  <h1>João &amp; Jorge</h1>
+  <p class="date" data-i18n="hero_date"></p>
+  <div id="countdown" aria-live="polite"></div>
+</header>
+
+<section id="story">
+  <h2 data-i18n="story_h"></h2>
+  <p data-i18n="story_p"></p>
+</section>
+
+<section id="details">
+  <h2 data-i18n="details_h"></h2>
+  <div class="cards">
+    <div class="card">
+      <h3 data-i18n="pre_boda"></h3>
+      <p data-i18n="pre_boda_p"></p>
+    </div>
+    <div class="card">
+      <h3 data-i18n="ceremony"></h3>
+      <p data-i18n="ceremony_p"></p>
+      <br>
+      <h3 data-i18n="reception"></h3>
+      <br>
+      <h3 data-i18n="cocktail"></h3>
+      <br>
+      <h3 data-i18n="cena"></h3>
+      <br>
+      <h3 data-i18n="corte"></h3>
+      <br>
+      <h3 data-i18n="danca"></h3>
+    </div>
+  </div>
+  <p style="margin-top:1.5rem">
+    <a href="https://www.google.com/maps/place/Casa+do+Ribeirinho/@41.1867728,-8.6908152,971m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd246f3133ce7b47:0xf583f4b64b26d950!8m2!3d41.1867688!4d-8.6882403!16s%2Fg%2F11clwff6wf?entry=ttu&g_ep=EgoyMDI2MDkzMC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)" data-i18n="maps"></a>
+  </p>
+</section>
+
+<section id="rsvp">
+  <h2 data-i18n="rsvp_h"></h2>
+  <p data-i18n="rsvp_intro"></p>
+  <!-- Replace the action with your Formspree (or similar) endpoint: https://formspree.io -->
+  <form id="rsvp-form" action="https://formspree.io/f/mjygwavn" method="POST">
+    <div><label for="name" data-i18n="f_name"></label><input id="name" name="name" required></div>
+    <div><label for="email" data-i18n="f_email"></label><input id="email" name="email" type="email" required></div>
+    <div><label for="phone" data-i18n="f_phone"></label><input id="phone" name="phone" type="phone" required></div>
+    <div>
+      <label for="attending" data-i18n="f_attending"></label>
+      <select id="attending" name="attending">
+        <option value="Aceitamos o convite" data-i18n="f_yes"></option>
+        <option value="Infelizmente rejeitaremos" data-i18n="f_no"></option>
+      </select>
+    </div>
+    <div><label for="guests" data-i18n="f_guests"></label><input id="guests" name="guests" type="number" min="1" max="10" value="1"></div>
+    <div><label for="children" data-i18n="f_children"></label><input id="children" name="children" type="number" min="0" max="6" value="0"></div>
+    <div>
+      <label for="confpreboda" data-i18n="f_confpreboda"></label>
+      <select id="confpreboda" name="confpreboda">
+        <option value="Vamos ao jantar pré-boda" data-i18n="f_yes2"></option>
+        <option value="Não vamos ao jantar pré-boda" data-i18n="f_no2"></option>
+      </select>
+    </div>
+    <div><label for="diet" data-i18n="f_diet"></label><input id="diet" name="dietary"></div>
+    <div><label for="msg" data-i18n="f_msg"></label><textarea id="msg" name="message" rows="3"></textarea></div>
+    <button type="submit" data-i18n="f_send"></button>
+  </form>
+  <p id="thanks" data-i18n="thanks"></p>
+</section>
+
+<section id="faq">
+  <h2 data-i18n="faq_h"></h2>
+  <div class="cards">
+    <div class="card"><h3><a href="https://hotelmoov.com/hotels/moov-matosinhos-sul/" target="_blank" rel="noopener" style="color:var(--accent)" data-i18n="q1"></a></h3><p data-i18n="a1"></p><a href="https://www.google.com/maps/place/Moov+Hotel+Matosinhos+Sul/@41.1798182,-8.6937555,971m/data=!3m2!1e3!4b1!4m9!3m8!1s0xd246f39547e3c9f:0x57bc303320fc32cc!5m2!4m1!1i2!8m2!3d41.1798142!4d-8.6911806!16s%2Fg%2F11npxfsl2d?entry=ttu&g_ep=EgoyMDI2MDkzMC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)">Av. da República 184, 4450-159 Matosinhos</a></div>
+    <div class="card"><h3><a href="https://www.eurostarshotels.com.pt/eurostars-matosinhos.html" target="_blank" rel="noopener" style="color:var(--accent)" data-i18n="q2"></a></h3><p data-i18n="a2"></p><a href="https://www.google.com/maps/place/Eurostars+Matosinhos/@41.1813289,-8.6961208,971m/data=!3m2!1e3!4b1!4m9!3m8!1s0xd246f573c9a04e5:0xbd53993f63bd34b6!5m2!4m1!1i2!8m2!3d41.1813249!4d-8.6935459!16s%2Fg%2F11h_6wd03s?entry=ttu&g_ep=EgoyMDI2MDkzMC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)">R. Heróis de França 536, 4450-159 Matosinhos</a></div>
+    <div class="card"><h3><a href="https://www.seaportohotel.com/" target="_blank" rel="noopener" style="color:var(--accent)" data-i18n="q3"></a></h3><p data-i18n="a3"></p><a href="https://www.google.com/maps/place/Sea+Porto+Hotel+-+Matosinhos/@41.1857937,-8.6876807,971m/data=!3m1!1e3!4m10!3m9!1s0xd246f3706df9c09:0xbd4ac262fa9dd2fd!5m3!1s2026-11-07!4m1!1i2!8m2!3d41.1857897!4d-8.6851058!16s%2Fg%2F11g6z27x0_?entry=ttu&g_ep=EgoyMDI2MDkzMC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)">Av. Dom Afonso Henriques 354, Matosinhos</a></div>
+    <div class="card"><h3><a href="https://www.cataloniahotels.com/pt/hotel/catalonia-porto" target="_blank" rel="noopener" style="color:var(--accent)" data-i18n="q4"></a></h3><p data-i18n="a4"></p><a href="https://www.google.com/maps/place/Hotel+Catalonia+Porto/@41.1455805,-8.6078876,971m/data=!3m2!1e3!4b1!4m10!3m9!1s0xd2465293177bf83:0x449e1c6140d15cb8!5m3!1s2026-11-07!4m1!1i2!8m2!3d41.1455765!4d-8.6053127!16s%2Fg%2F11j4xytt3n?entry=ttu&g_ep=EgoyMDI2MDkzMC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)">Rua de Entreparedes 92, 4000-198 Porto</a></div>
+  </div>
+</section>
+
+<section id="rest">
+  <h2 data-i18n="rest_h"></h2>
+  <div class="cards">
+    <div class="card"><h3><a href="https://www.google.com/maps/place/Requinte+Francesinhas/@41.1844101,-8.6879817,971m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd246f3771bffe7d:0x744ad3a7a75ba5d0!8m2!3d41.1844061!4d-8.6854068!16s%2Fg%2F1tfr1q86?entry=ttu&g_ep=EgoyMDI2MTAwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)" data-i18n="r1"></a></h3><p data-i18n="rr1"></p><a href="https://www.google.com/maps/place/Requinte+Francesinhas/@41.1844101,-8.6879817,971m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd246f3771bffe7d:0x744ad3a7a75ba5d0!8m2!3d41.1844061!4d-8.6854068!16s%2Fg%2F1tfr1q86?entry=ttu&g_ep=EgoyMDI2MTAwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)">R. Godinho 837, 4450-150 Matosinhos</a></div>
+    <div class="card"><h3><a href="https://www.centralchurrasco.pt/restaurant/matosinhos/" target="_blank" rel="noopener" style="color:var(--accent)" data-i18n="r2"></a></h3><p data-i18n="rr2"></p><a href="https://www.google.com/maps/place/Central+Churrasco+de+Matosinhos/@41.185032,-8.6973628,971m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd246f2fb1db84d9:0x58eeaab33dba88de!8m2!3d41.185028!4d-8.6947879!16s%2Fg%2F11b6_hvm5x?entry=ttu&g_ep=EgoyMDI2MTAwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)">Av. Serpa Pinto 137, 4450-280 Matosinhos</a></div>
+    <div class="card"><h3><a href="https://www.google.com/maps/place/Restaurante+Conga+Casa+das+Bifanas/@41.1489454,-8.6119525,971m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd2464e4b6f52711:0xd56072eafa3812df!8m2!3d41.1489414!4d-8.6093776!16s%2Fg%2F11bbrr29qg?entry=ttu&g_ep=EgoyMDI2MTAwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)" data-i18n="r3"></a></h3><p data-i18n="rr3"></p><a href="https://www.google.com/maps/place/Restaurante+Conga+Casa+das+Bifanas/@41.1489454,-8.6119525,971m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd2464e4b6f52711:0xd56072eafa3812df!8m2!3d41.1489414!4d-8.6093776!16s%2Fg%2F11bbrr29qg?entry=ttu&g_ep=EgoyMDI2MTAwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)">R. do Bonjardim 318, 4000-115 Porto</a></div>
+    <div class="card"><h3><a href="https://cafesantiago.pt/" target="_blank" rel="noopener" style="color:var(--accent)" data-i18n="r4"></a></h3><p data-i18n="rr4"></p><a href="https://www.google.com/maps/place/Caf%C3%A9+Santiago/@41.1463861,-8.6074,971m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd2464ef7cd38981:0x89405aa66157dd36!8m2!3d41.1463821!4d-8.6048251!16s%2Fg%2F11b76txfk0?entry=ttu&g_ep=EgoyMDI2MTAwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)">R. de Passos Manuel 226, 4000-382 Porto</a></div>
+    <div class="card"><h3><a href="https://www.google.com/maps/place/Guindalense+Futebol+Clube/@41.1416916,-8.6088738,971m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd2464e71a33c3b9:0xbd9d069585421915!8m2!3d41.1416916!4d-8.6088738!16s%2Fg%2F11bc95wtc3?entry=ttu&g_ep=EgoyMDI2MTAwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)" data-i18n="r5"></a></h3><p data-i18n="rr5"></p><a href="https://www.google.com/maps/place/Guindalense+Futebol+Clube/@41.1416916,-8.6088738,971m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd2464e71a33c3b9:0xbd9d069585421915!8m2!3d41.1416916!4d-8.6088738!16s%2Fg%2F11bc95wtc3?entry=ttu&g_ep=EgoyMDI2MTAwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" style="color:var(--accent)">Escada dos Guindais 43, 4000-337 Porto</a></div>
+  </div>
+</section>
+
+<section id="info">
+  <h2 data-i18n="info"></h2>
+  <div class="cards">
+    <div class="card">
+    <h3 data-i18n="contact"></h3>
+    <p data-i18n="telef"></p>
+    </div>
+    <div class="card">
+    <h3>IBAN</h3>
+    <p data-i18n="iban1"></p>
+    <p data-i18n="iban2"></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <strong>João &amp; Jorge</strong> · <span data-i18n="foot_date"></span>
+</footer>
+
+<script>// ---------- Translations ----------
+  // ALL the page text (Portuguese and Spanish) lives here.
+  // Use <br> for a new line and <strong>...</strong> for bold.
+  const T = {
+    pt: {
+      toggle: 'ES', title: 'João & Jorge – O Nosso Casamento',
+      nav_story: 'A Nossa História', nav_details: 'Detalhes', nav_hotels: 'Hotéis', nav_rsvp: 'Confirmação', nav_faq: 'Hotéis', nav_rest: 'Restaurantes',
+      kicker: '<strong>Vamos casar-nos!</strong>', hero_date: '31 de Julho de 2027 · Matosinhos, Portugal',
+      days: 'dias', hours: 'horas', min: 'min', today: 'Hoje é o dia!',
+      story_h: 'A Nossa História',
+      story_p: 'Conhecemo-nos em 2020, sem imaginar onde esta aventura nos iria levar.<br>Logo no início, brincávamos que se nos casássemos seria em 2027.<br>Com o tempo, fomos conhecendo-nos e até falando de como seria o pedido de casamento perfeito. Chegámos mesmo a visitar uma cidade do amor, mas, ainda não era a altura certa.<br>O tempo foi passando, os planos foram mudando e 2027 está mesmo aí à porta. A verdade é que o pedido nunca aconteceu, mas há coisas que não precisam de seguir o guião para serem especiais.<br>Por isso, decidimos que não vale a pena esperar mais...<br><strong>Vamos casar!</strong>',
+      details_h: 'Detalhes', ceremony: 'Casamento', reception: 'Cerimónia Civíl', cocktail: 'Cocktail', cena: 'Jantar',
+      corte: 'Corte do Bolo', danca: 'Baile',
+      ceremony_p: '31 de Julho 2027, 14h00<br>Casa do Ribeirinho<br> R. Dr. José Ventura 31, 4250-245 Matosinhos<br>Há parking gratuito.<br>Na mesma quinta, celebraremos:',
+      pre_boda: 'Jantar Pré-Boda',
+      pre_boda_p: '30 de Julho 2027, 20h<br>Sea Porto Hotel<br>Av. Dom Afonso Henriques 354, Matosinhos<br>Reservamos este sítio para os convidados que vêm de fora não terem de procurar onde jantar, mas são todos bem-vindos!<br>Será um jantar light, de acepipes e bebidas, para conversar e se conhecerem.', maps: 'Abrir no Google Maps →',
+      rsvp_h: 'Confirmação', rsvp_intro: 'Responder até <strong>31 de Maio de 2027</strong>.',
+      f_name: 'Nome Completo', f_email: 'Email', f_phone: 'Número de Telefone', f_attending: 'Vêm ao casamento?',
+      f_yes: 'Aceitamos o convite', f_no: 'Infelizmente rejeitaremos',
+      f_confpreboda: 'Vêm ao jantar pré-boda?',
+      f_yes2: 'Vamos ao jantar pré-boda', f_no2: 'Não vamos ao jantar pré-boda',
+      f_guests: 'Número de convidados (incluindo tu)', f_children: 'Dos quais quantos são crianças (menú kids)?',
+      f_diet: 'Restrições Alimentares', f_msg: 'Mensagem para o casal',
+      f_send: 'Enviar resposta', thanks: 'Obrigado! A vossa resposta foi enviada.',
+      err: 'Algo correu mal. Por favor, tente novamente.', neterr: 'Erro de rede. Por favor, tente novamente.',
+      faq_h: 'Hotéis Recomendados', q1: 'Moov Hotel Matosinhos Sul', a1: 'Hotel ao lado da praia, a 1km da quinta.<br>Código de 10% de desconto para dias 30/7 e 31/7 (com ou sem pequeno-almoço): JOAOJORGE',
+      q2: 'Eurostars Matosinhos', a2: 'Hotel ao lado da praia, a 1km da quinta.<br>Código de 15% de desconto de 29/7 e 2/8 (reservas devem fazer-se antes de 31/3 e não são reembolsáveis a partir de 45 dias antes): JJ3107',
+      q3: 'Sea Porto Hotel - Matosinhos', a3: 'Hotel mais próximo da quinta (300 metros).<br>Código de 7% de desconto (só com pequeno-almoço): JOAOJORGE',
+      q4: 'Hotel Catalonia Porto', a4: 'Hotel no centro do Porto.<br>Quarto duplo: 140€ com pequeno-almoço.',
+      rest_h: 'Restaurantes Recomendados', r1: 'Requinte Francesinha', rr1: 'O melhor restaurante de francesina de Matosinhos', r2: 'Central Churrasco Matosinhos', rr2: 'Restaurante conhecido para churrasco de frango e porco.',
+      r3: 'Restaurante Conga Casa das Bifanas', rr3: 'Restaurante típico do Porto para bifanas.', r4: 'Café Santiago', rr4: 'A francesinha preferida do João.', r5: 'Café Guindalense Futebol Clube', rr5: 'Cerveja no centro do Porto com as melhores vistas para a ponte Luís I.',
+      foot_date: '<strong>31 Julho 2027</strong>', photo: 'Foto', info: 'Informações', contact: 'Contactos', 
+      nav_info: 'Informações', telef: 'João: +351 915440557<br>Jorge (Português): +351 937140691<br>Jorge (Espanhol): +34 677648885', iban: 'PT50 3560 0001 9001 8208 8861 5'
+    },
+    es: {
+      toggle: 'PT', title: 'João y Jorge – Nuestra Boda',
+      nav_story: 'Nuestra historia', nav_details: 'Detalles', nav_hotels: 'Hoteles', nav_rsvp: 'Confirmar asistencia', nav_faq: 'Alojamiento', nav_rest : 'Restaurantes',
+      kicker: '<strong>¡Nos casamos!</strong>', hero_date: '31 de Julio de 2027 · Matosinhos, Portugal',
+      days: 'días', hours: 'horas', min: 'min', today: '¡Hoy es el gran día!',
+      story_h: 'Nuestra historia',
+      story_p: 'Nos conocimos allá por el 2020, sin imaginar a dónde nos llevaría esta aventura.<br>Ya en el inicio bromeábamos que si nos casábamos, sería en el 2027.<br>Con el tiempo, nos fuimos conociendo y hasta hablando de cómo sería la pedida de mano perfecta. Llegamos incluso a visitar una ciudad del amor, pero aún no era el momento adecuado.<br>El tiempo fue pasando... los planos fueron mudando... y 2027 ya está aquí. La verdad es que la pedida nunca sucedió, pero hay cosas que no necesitan seguir un guion para ser especiales.<br>Por eso, decidimos que era mejor no esperar más...<br><strong>¡Nos casamos!</strong>',
+      details_h: 'Los detalles', ceremony: 'Boda', reception: 'Ceremonia Civil', cocktail: 'Coctél Aperitivo', cena: 'Banquete',
+      corte: 'Corte de la Tarta', danca: 'Baile',
+      ceremony_p: '31 de julio de 2027, 14h00<br>Casa do Ribeirinho<br> R. Dr. José Ventura 31, 4250-245 Matosinhos<br>Hay parking gratis.<br>En la misma ubicación, celebraremos, en un estilo más portugues que español:',
+      pre_boda: 'Coctél Aperitivo Pre-Boda',
+      pre_boda_p: '30 de Julio 2027, 20h<br>Sea Porto Hotel<br>Av. Dom Afonso Henriques 354, Matosinhos<br>Reservamos este sítio para que los invitados que vienen de lejos no tengan que buscar donde cenar, pero son todos bienvenidos!<br>Será una cena light, de tapas y bebidas, para charlar y conocernos.', maps: 'Abrir en Google Maps →',
+      rsvp_h: 'Confirmar asistencia', rsvp_intro: 'Por favor, responde antes del <strong>31 de mayo de 2027</strong>.',
+      f_name: 'Nombre completo', f_email: 'Correo electrónico', f_phone: 'Número de Teléfono', f_attending: '¿Asistirás?',
+      f_yes: 'Con mucha alegría, sí', f_no: 'Lamentablemente, no puedo',
+      f_confpreboda: 'Venis al cocktail pré-boda?',
+      f_yes2: 'Sì, vamos', f_no2: 'No, no vamos',
+      f_guests: 'Número de invitados (incluyéndote)', f_children: 'De los cuales quantos niños (menu niños)?',
+      f_diet: 'Restricciones alimentarias', f_msg: 'Mensaje para los novios',
+      f_send: 'Enviar confirmación', thanks: '¡Gracias! Tu respuesta ha sido enviada.',
+      err: 'Algo salió mal. Por favor, inténtalo de nuevo.', neterr: 'Error de red. Por favor, inténtalo de nuevo.',
+      faq_h: 'Alojamiento', q1: 'Moov Hotel Matosinhos Sul', a1: 'Hotel al lado de la playa, a 1km del evento.<br>Codigo de 10% de descuento para días 30/7 y 31/7 (con o sin desayuno): JJ3107',
+      q2: 'Eurostars Matosinhos', a2: 'Hotel al lado de la playa, a 1km del evento.<br>Codigo de 15% de descuento entre 29/7 y 2/8 (reservas deben echarse antes del 31/3 y no reembolsáble con 45 días de adelanto): JJ3107',
+      q3: 'Sea Porto Hotel - Matosinhos', a3: 'Hotel al lado del evento (300 metros).<br>Codigo de 7% de descuento (solo con desayuno): JOAOJORGE',
+      q4: 'Hotel Catalonia Porto', a4: 'Hotel en el centro de Porto.<br>Habitación doble: 140€ con desayuno.',
+      rest_h: 'Restaurantes Recomendados', r1: 'Requinte Francesinha', rr1: 'Mejor restaurante de Matosinhos para francesinha.', r2: 'Central Churrasco Matosinhos', rr2: 'Conocido restaurante por el churrasco de pollo y cerdo.',
+      r3: 'Restaurante Conga Casa das Bifanas', rr3: 'Restaurante típico de Porto para las bifanas.', r4: 'Café Santiago', rr4: 'La francesinha preferida de João.', r5: 'Café Guindalense Futebol Clube', rr5: 'Cerveza en el centro de Porto con las mejores vistas para el puente Luis I.',
+      foot_date: '<strong>31 Julio 2027</strong>', photo: 'Foto', info: 'Informaciones', contact: 'Contactos', 
+      nav_info: 'Informaciones', telef: 'João: +351 915440557<br>Jorge (Portugues): +351 937140691<br>Jorge (Español): +34 677648885', iban1: 'PT50 3560 0001 9001 8208 8861 5'
+    }
+  };
+
+  let lang = 'pt';
+  try { const saved = localStorage.getItem('wedding-lang'); if (saved === 'es' || saved === 'pt') lang = saved; } catch (e) {}
+
+  function getT() { return T[lang]; }
+
+  function applyLang() {
+    const t = getT();
+    document.documentElement.lang = lang;
+    document.title = t.title;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.innerHTML = String(t[el.dataset.i18n] ?? '').replace(/\n/g, '<br>');
+    });
+    document.getElementById('lang-toggle').textContent = t.toggle;
+    document.getElementById('f_lang').value = lang;
+    tick();
+  }
+
+  document.getElementById('lang-toggle').addEventListener('click', () => {
+    lang = lang === 'pt' ? 'es' : 'pt';
+    try { localStorage.setItem('wedding-lang', lang); } catch (e) {}
+    applyLang();
+  });
+
+  // ---------- Countdown (change the date to your wedding day) ----------
+  const target = new Date('2027-07-31T14:00:00');
+  const box = document.getElementById('countdown');
+  function tick() {
+    const t = getT();
+    const diff = target - new Date();
+    if (diff <= 0) { box.textContent = t.today; return; }
+    const d = Math.floor(diff / 864e5);
+    const h = Math.floor(diff / 36e5) % 24;
+    const m = Math.floor(diff / 6e4) % 60;
+    box.innerHTML = [[d, t.days], [h, t.hours], [m, t.min]]
+      .map(([v, l]) => `<div><span>${v}</span><small>${l}</small></div>`).join('');
+  }
+  setInterval(tick, 60000);
+
+  // ---------- RSVP submit without leaving the page ----------
+  const form = document.getElementById('rsvp-form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      if (res.ok) { form.style.display = 'none'; document.getElementById('thanks').style.display = 'block'; }
+      else alert(getT().err);
+    } catch { alert(getT().neterr); }
+  });
+
+  applyLang();
+</script>
+</body>
+</html>
