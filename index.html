@@ -25,6 +25,27 @@
   #lang-toggle { background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: .25rem .9rem; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
   #lang-toggle:hover { background: var(--accent); color: #fff; filter: none; }
 
+  /* Menu button + links wrapper. On desktop the wrapper is "invisible" (display: contents),
+     so the bar looks exactly as before. */
+  #menu-toggle { display: none; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: .3rem .7rem; line-height: 1; cursor: pointer; }
+  #menu-toggle:hover { background: var(--accent); color: #fff; filter: none; }
+  #menu-toggle svg { display: block; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  #menu-toggle .ic-close { display: none; }
+  nav.open #menu-toggle .ic-open { display: none; }
+  nav.open #menu-toggle .ic-close { display: inline; }
+  .nav-links { display: contents; }
+
+  /* Mobile: only the menu button and the language button are shown in the bar;
+     the links appear in a dropdown when the menu button is pressed. */
+  @media (max-width: 768px) {
+    nav { justify-content: space-between; flex-wrap: nowrap; }
+    #menu-toggle { display: inline-flex; align-items: center; }
+    .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch;
+                 background: rgba(251,248,244,.98); backdrop-filter: blur(6px); border-bottom: 1px solid var(--soft); box-shadow: 0 8px 16px rgba(0,0,0,.08); }
+    nav.open .nav-links { display: flex; }
+    .nav-links a { padding: .8rem 1rem; text-align: center; border-top: 1px solid rgba(0,133,185,.25); }
+  }
+
   .hero { min-height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; background: linear-gradient(180deg, var(--soft), var(--bg)); }
   .hero p.kicker { display: flex; flex-direction: column; white-space: normal; letter-spacing: .3em; text-transform: uppercase; font-size: 1.5rem; color: var(--accent); }
   .hero h1 { font-size: clamp(3rem, 10vw, 6rem); margin: .5rem 0; }
@@ -77,12 +98,17 @@
 <body>
 
 <nav>
-  <a href="#story" data-i18n="nav_story"></a>
-  <a href="#details" data-i18n="nav_details"></a>
-  <a href="#rsvp" data-i18n="nav_rsvp"></a>
-  <a href="#faq" data-i18n="nav_faq"></a>
-  <a href="#rest" data-i18n="nav_rest"></a>
-  <a href="#info" data-i18n="nav_info"></a>
+  <button id="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path class="ic-open" d="M4 7h16M4 12h16M4 17h16"/><path class="ic-close" d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <div id="nav-links" class="nav-links">
+    <a href="#story" data-i18n="nav_story"></a>
+    <a href="#details" data-i18n="nav_details"></a>
+    <a href="#rsvp" data-i18n="nav_rsvp"></a>
+    <a href="#faq" data-i18n="nav_faq"></a>
+    <a href="#rest" data-i18n="nav_rest"></a>
+    <a href="#info" data-i18n="nav_info"></a>
+  </div>
   <button id="lang-toggle" type="button" aria-label="Cambiar idioma / Mudar Língua"></button>
 </nav>
 
@@ -311,6 +337,15 @@
       .map(([v, l]) => `<div><span>${v}</span><small>${l}</small></div>`).join('');
   }
   setInterval(tick, 60000);
+
+  // ---------- Mobile menu ----------
+  const navEl = document.querySelector('nav');
+  const menuBtn = document.getElementById('menu-toggle');
+  function setMenu(open) { navEl.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', String(open)); }
+  menuBtn.addEventListener('click', () => setMenu(!navEl.classList.contains('open')));
+  document.querySelectorAll('#nav-links a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('click', (e) => { if (!navEl.contains(e.target)) setMenu(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
 
   // ---------- RSVP submit without leaving the page ----------
   const form = document.getElementById('rsvp-form');
